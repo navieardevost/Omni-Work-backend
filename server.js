@@ -43,7 +43,12 @@ const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
 const app = express();
+
+// ⭐ REQUIRED FOR STRIPE WEBHOOKS ON RENDER
+app.use("/api/webhooks/stripe", express.raw({ type: "*/*" }));
+
 app.use(cors());
+
 
 const STRIPE_V2_VERSION = "2026-08-26.preview";
 
@@ -288,5 +293,5 @@ app.post("/api/tasks/:taskId/checkout", async (req, res) => {
   }
 });
 
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 10000;
 app.listen(port, () => console.log(`Omni Work backend listening on port ${port}`));
