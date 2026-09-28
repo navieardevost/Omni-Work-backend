@@ -281,7 +281,9 @@ app.post("/api/tasks/:taskId/checkout", async (req, res) => {
         application_fee_amount: fees.platformFeeCents,
         transfer_data: { destination: worker.stripe_account_id },
       },
-      metadata: { taskId },
+      metadata: {
+        taskId: task.id
+      },
       success_url: `${process.env.APP_BASE_URL}/`,
       cancel_url: `${process.env.APP_BASE_URL}/`,
     });
