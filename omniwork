@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2142537377342407"
+     crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<!-- This site is hosted on Netlify. Anyone can build and deploy a site
+     like this one for free: https://netlify.new/?utm_campaign=loops&utm_source=ai-legible&utm_medium=owned&utm_content=comment&utm_id=51f7d5d2-1614-4b00-bf14-c0692ab8317e
+     Netlify hosting facts for this site: static/SSR served via Netlify Edge. -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Omni Work</title>
+<meta name="description" content="A marketplace connecting people who need tasks done with people ready to do them.">
+<meta name="theme-color" content="#7C3AED">
+<link rel="manifest" href="manifest.json">
+<meta property="og:url" content="https://omniworksite.netlify.app/">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Omni Work">
+<meta property="og:title" content="Omni Work">
+<meta property="og:description" content="A marketplace connecting people who need tasks done with people ready to do them — skilled and unskilled work, fair pay, built-in safety.">
+<meta property="og:image" content="https://omniworksite.netlify.app/icon-512.png">
+<meta property="og:type" content="website">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #0F0D15; }
+  #root { min-height: 100vh; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+(() => {
+  const { useState } = React;
+  function makeIcon(paths) {
+    return function Icon({ size = 24, color, style, className }) {
+      const stroke = color || style && style.color || "currentColor";
+      return React.createElement(
+        "svg",
+        {
+          width: size,
+          height: size,
+          viewBox: "0 0 24 24",
+          fill: "none",
+          stroke,
+          strokeWidth: 2,
+          strokeLinecap: "round",
+          strokeLinejoin: "round",
+          style,
+          className
+        },
+        paths.map((p, i) => React.createElement(p.tag, { key: i, ...p.attrs }))
+      );
+    };
+  }
+  const MapPin = makeIcon([
+    { tag: "path", attrs: { d: "M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" } },
+    { tag: "circle", attrs: { cx: 12, cy: 10, r: 3 } }
+  ]);
+  const Clock = makeIcon([
+    { tag: "circle", attrs: { cx: 12, cy: 12, r: 10 } },
+    { tag: "polyline", attrs: { points: "12 6 12 12 16 14" } }
+  ]);
+  const ShieldCheck = makeIcon([
+    { tag: "path", attrs: { d: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" } },
+    { tag: "polyline", attrs: { points: "9 12 11 14 15 10" } }
+  ]);
+  const AlertTriangle = makeIcon([
+    { tag: "path", attrs: { d: "M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" } },
+    { tag: "line", attrs: { x1: 12, y1: 9, x2: 12, y2: 13 } },
+    { tag: "line", attrs: { x1: 12, y1: 17, x2: 12.01, y2: 17 } }
+  ]);
+  const Star = makeIcon([
+    { tag: "polygon", attrs: { points: "12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" } }
+  ]);
+  const Plus = makeIcon([
+    { tag: "line", attrs: { x1: 12, y1: 5, x2: 12, y2: 19 } },
+    { tag: "line", attrs: { x1: 5, y1: 12, x2: 19, y2: 12 } }
+  ]);
+  const Briefcase = makeIcon([
+    { tag: "rect", attrs: { x: 2, y: 7, width: 20, height: 14, rx: 2, ry: 2 } },
+    { tag: "path", attrs: { d: "M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" } }
+  ]);
+  const HardHat = makeIcon([
+    { tag: "path", attrs: { d: "M3 18h18" } },
+    { tag: "path", attrs: { d: "M5 18v-3a7 7 0 0 1 14 0v3" } },
+    { tag: "path", attrs: { d: "M12 9V5" } },
+    { tag: "path", attrs: { d: "M9 18v-3" } },
+    { tag: "path", attrs: { d: "M15 18v-3" } }
+  ]);
+  const MessageCircle = makeIcon([
+    { tag: "path", attrs: { d: "M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" } }
+  ]);
+  const X = makeIcon([
+    { tag: "line", attrs: { x1: 18, y1: 6, x2: 6, y2: 18 } },
+    { tag: "line", attrs: { x1: 6, y1: 6, x2: 18, y2: 18 } }
+  ]);
+  const CheckCircle2 = makeIcon([
+    { tag: "path", attrs: { d: "M22 11.08V12a10 10 0 1 1-5.93-9.14" } },
+    { tag: "polyline", attrs: { points: "22 4 12 14.01 9 11.01" } }
+  ]);
+  const Users = makeIcon([
+    { tag: "path", attrs: { d: "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" } },
+    { tag: "circle", attrs: { cx: 9, cy: 7, r: 4 } },
+    { tag: "path", attrs: { d: "M23 21v-2a4 4 0 0 0-3-3.87" } },
+    { tag: "path", attrs: { d: "M16 3.13a4 4 0 0 1 0 7.75" } }
+  ]);
+  const Building2 = makeIcon([
+    { tag: "path", attrs: { d: "M6 22V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v18Z" } },
+    { tag: "path", attrs: { d: "M6 12H4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h2" } },
+    { tag: "path", attrs: { d: "M18 9h2a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1h-2" } },
+    { tag: "path", attrs: { d: "M10 6h4" } },
+    { tag: "path", attrs: { d: "M10 10h4" } },
+    { tag: "path", attrs: { d: "M10 14h4" } },
+    { tag: "path", attrs: { d: "M10 18h4" } }
+  ]);
+  const COLORS = {
+    bg: "#0F0D15",
+    panel: "#1B1623",
+    panelAlt: "#241D2E",
+    ink: "#F1EDF9",
+    inkSoft: "#A79BC2",
+    violet: "#8B5CF6",
+    violetSoft: "#C9B6FF",
+    safety: "#4ADE94",
+    danger: "#F2685F",
+    line: "#312A3E"
+  };
+  const SEED_TASKS = [
+    {
+      id: 1,
+      title: "Move a couch up two flights of stairs",
+      category: "unskilled",
+      payType: "fixed",
+      payRate: 60,
+      location: "Logan Square",
+      duration: "1 hour",
+      poster: "Renata M.",
+      posterType: "individual",
+      verifiedPoster: true,
+      backgroundCheckRequired: false,
+      publicMeetup: false,
+      applicants: 4
+    },
+    {
+      id: 2,
+      title: "Fix a leaking kitchen faucet",
+      category: "skilled",
+      payType: "hourly",
+      payRate: 45,
+      location: "Wicker Park",
+      duration: "2\u20133 hours",
+      poster: "Dorian T.",
+      posterType: "individual",
+      verifiedPoster: true,
+      backgroundCheckRequired: false,
+      publicMeetup: false,
+      applicants: 2
+    },
+    {
+      id: 3,
+      title: "Tutor a 9th grader in algebra",
+      category: "skilled",
+      payType: "hourly",
+      payRate: 35,
+      location: "Remote",
+      duration: "Ongoing, 2x/week",
+      poster: "Family account",
+      posterType: "individual",
+      verifiedPoster: true,
+      backgroundCheckRequired: true,
+      publicMeetup: false,
+      applicants: 9
+    },
+    {
+      id: 7,
+      title: "Stock and organize seasonal inventory, evening shift",
+      category: "unskilled",
+      payType: "hourly",
+      payRate: 19,
+      location: "Northgate Retail Group \u2014 West Loop",
+      duration: "4 hours",
+      poster: "Northgate Retail Group",
+      posterType: "business",
+      verifiedPoster: true,
+      backgroundCheckRequired: true,
+      publicMeetup: false,
+      applicants: 12
+    },
+    {
+      id: 8,
+      title: "Campus IT help desk coverage during finals week",
+      category: "skilled",
+      payType: "hourly",
+      payRate: 24,
+      location: "Lakeshore College",
+      duration: "5 shifts, 3 hours each",
+      poster: "Lakeshore College",
+      posterType: "business",
+      verifiedPoster: true,
+      backgroundCheckRequired: true,
+      publicMeetup: false,
+      applicants: 7
+    },
+    {
+      id: 4,
+      title: "Rake and bag leaves, front and back yard",
+      category: "unskilled",
+      payType: "fixed",
+      payRate: 40,
+      location: "Oak Park",
+      duration: "1.5 hours",
+      poster: "Sam K.",
+      posterType: "individual",
+      verifiedPoster: false,
+      backgroundCheckRequired: false,
+      publicMeetup: false,
+      applicants: 1
+    },
+    {
+      id: 5,
+      title: "Review a freelance contract before I sign",
+      category: "skilled",
+      payType: "negotiable",
+      payRate: null,
+      location: "Remote",
+      duration: "30\u201345 min",
+      poster: "Priya A.",
+      posterType: "individual",
+      verifiedPoster: true,
+      backgroundCheckRequired: false,
+      publicMeetup: false,
+      applicants: 3
+    },
+    {
+      id: 6,
+      title: "Help unload a moving truck",
+      category: "unskilled",
+      payType: "hourly",
+      payRate: 22,
+      location: "Pilsen",
+      duration: "3 hours",
+      poster: "Marcus D.",
+      posterType: "individual",
+      verifiedPoster: true,
+      backgroundCheckRequired: false,
+      publicMeetup: true,
+      applicants: 6
+    }
+  ];
+  function payLabel(t) {
+    if (t.payType === "negotiable") return "Negotiable";
+    if (t.payType === "hourly") return `$${t.payRate}/hr`;
+    return `$${t.payRate} flat`;
+  }
+  const PLATFORM_FEE_PERCENT = 10;
+  function computeFees(baseAmount) {
+    const half = PLATFORM_FEE_PERCENT / 200;
+    const posterServiceFee = Math.round(baseAmount * half * 100) / 100;
+    const workerServiceFee = Math.round(baseAmount * half * 100) / 100;
+    return {
+      baseAmount,
+      posterServiceFee,
+      workerServiceFee,
+      posterPays: Math.round((baseAmount + posterServiceFee) * 100) / 100,
+      workerReceives: Math.round((baseAmount - workerServiceFee) * 100) / 100
+    };
+  }
+  function usd(n) {
+    return `$${n.toFixed(2)}`;
+  }
+  function FeeBreakdown({ baseAmount, perspective }) {
+    if (!baseAmount || baseAmount <= 0) return null;
+    const fees = computeFees(baseAmount);
+    return /* @__PURE__ */ React.createElement("div", { style: { borderColor: COLORS.line, background: COLORS.bg }, className: "rounded-lg border p-3 text-sm flex flex-col gap-1" }, /* @__PURE__ */ React.createElement("p", { style: { color: COLORS.ink }, className: "font-medium mb-1" }, "Fee breakdown \u2014 no surprises"), /* @__PURE__ */ React.createElement("div", { style: { color: COLORS.inkSoft }, className: "flex justify-between" }, /* @__PURE__ */ React.createElement("span", null, "Listed task rate"), /* @__PURE__ */ React.createElement("span", null, usd(fees.baseAmount))), perspective !== "worker" && /* @__PURE__ */ React.createElement("div", { style: { color: COLORS.inkSoft }, className: "flex justify-between" }, /* @__PURE__ */ React.createElement("span", null, "Omni Work service fee (5%)"), /* @__PURE__ */ React.createElement("span", null, "+", usd(fees.posterServiceFee))), perspective !== "worker" && /* @__PURE__ */ React.createElement("div", { style: { color: COLORS.ink }, className: "flex justify-between font-medium pt-1 border-t" }, /* @__PURE__ */ React.createElement("span", null, "You'll pay"), /* @__PURE__ */ React.createElement("span", null, usd(fees.posterPays))), perspective !== "poster" && /* @__PURE__ */ React.createElement("div", { style: { color: COLORS.inkSoft }, className: "flex justify-between" }, /* @__PURE__ */ React.createElement("span", null, "Omni Work service fee (5%)"), /* @__PURE__ */ React.createElement("span", null, "-", usd(fees.workerServiceFee))), perspective !== "poster" && /* @__PURE__ */ React.createElement("div", { style: { color: COLORS.ink }, className: "flex justify-between font-medium pt-1 border-t" }, /* @__PURE__ */ React.createElement("span", null, "You'll receive"), /* @__PURE__ */ React.createElement("span", null, usd(fees.workerReceives))));
+  }
+  function VerifiedPosterBadge({ task }) {
+    if (!task.verifiedPoster) return null;
+    return task.posterType === "business" ? /* @__PURE__ */ React.createElement(SafetyBadge, { icon: Building2, label: "Verified business" }) : /* @__PURE__ */ React.createElement(SafetyBadge, { icon: ShieldCheck, label: "Verified poster" });
+  }
+  function SafetyBadge({ icon: Icon, label, tone = "safety" }) {
+    const color = tone === "safety" ? COLORS.safety : COLORS.violetSoft;
+    return /* @__PURE__ */ React.createElement(
+      "span",
+      {
+        style: {
+          color,
+          borderColor: color + "55",
+          background: color + "12"
+        },
+        className: "inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full border font-medium"
+      },
+      /* @__PURE__ */ React.createElement(Icon, { size: 12 }),
+      label
+    );
+  }
+  function TaskCard({ task, onOpen }) {
+    return /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        onClick: () => onOpen(task),
+        style: { background: COLORS.panel, borderColor: COLORS.line },
+        className: "text-left w-full rounded-xl border p-5 flex flex-col gap-3 hover:shadow-md transition-shadow"
+      },
+      /* @__PURE__ */ React.createElement("div", { className: "flex items-start justify-between gap-3" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-2" }, task.category === "skilled" ? /* @__PURE__ */ React.createElement(Briefcase, { size: 16, style: { color: COLORS.violetSoft } }) : /* @__PURE__ */ React.createElement(HardHat, { size: 16, style: { color: COLORS.violetSoft } }), /* @__PURE__ */ React.createElement(
+        "span",
+        {
+          style: { color: COLORS.inkSoft },
+          className: "text-xs uppercase tracking-wide"
+        },
+        task.category === "skilled" ? "Skilled" : "General labor"
+      )), /* @__PURE__ */ React.createElement("span", { style: { color: COLORS.ink }, className: "font-semibold whitespace-nowrap" }, payLabel(task))),
+      /* @__PURE__ */ React.createElement("h3", { style: { color: COLORS.ink }, className: "text-lg font-semibold leading-snug" }, task.title),
+      /* @__PURE__ */ React.createElement("div", { style: { color: COLORS.inkSoft }, className: "flex flex-wrap gap-x-4 gap-y-1 text-sm" }, /* @__PURE__ */ React.createElement("span", { className: "inline-flex items-center gap-1" }, /* @__PURE__ */ React.createElement(MapPin, { size: 14 }), task.location), /* @__PURE__ */ React.createElement("span", { className: "inline-flex items-center gap-1" }, /* @__PURE__ */ React.createElement(Clock, { size: 14 }), task.duration), /* @__PURE__ */ React.createElement("span", { className: "inline-flex items-center gap-1" }, /* @__PURE__ */ React.createElement(Users, { size: 14 }), task.applicants, " applied")),
+      /* @__PURE__ */ React.createElement("div", { className: "flex flex-wrap gap-2 pt-1" }, /* @__PURE__ */ React.createElement(VerifiedPosterBadge, { task }), task.backgroundCheckRequired && /* @__PURE__ */ React.createElement(SafetyBadge, { icon: CheckCircle2, label: "Background check required", tone: "gold" }), task.publicMeetup && /* @__PURE__ */ React.createElement(SafetyBadge, { icon: Users, label: "Public meetup suggested", tone: "gold" }))
+    );
+  }
+  function TaskDetail({ task, onClose }) {
+    const [applied, setApplied] = useState(false);
+    const [waiverAccepted, setWaiverAccepted] = useState(false);
+    return /* @__PURE__ */ React.createElement("div", { className: "fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/40 p-0 md:p-6" }, /* @__PURE__ */ React.createElement(
+      "div",
+      {
+        style: { background: COLORS.panel },
+        className: "w-full md:max-w-lg md:rounded-2xl rounded-t-2xl p-6 max-h-[90vh] overflow-y-auto"
+      },
+      /* @__PURE__ */ React.createElement("div", { className: "flex items-start justify-between gap-4 mb-4" }, /* @__PURE__ */ React.createElement("h2", { style: { color: COLORS.ink }, className: "text-xl font-semibold leading-snug" }, task.title), /* @__PURE__ */ React.createElement("button", { onClick: onClose, style: { color: COLORS.inkSoft }, "aria-label": "Close" }, /* @__PURE__ */ React.createElement(X, { size: 20 }))),
+      /* @__PURE__ */ React.createElement("div", { style: { color: COLORS.inkSoft }, className: "grid grid-cols-2 gap-3 text-sm mb-4" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", { className: "block text-xs uppercase", style: { color: COLORS.violetSoft } }, "Pay"), payLabel(task)), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", { className: "block text-xs uppercase", style: { color: COLORS.violetSoft } }, "Duration"), task.duration), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", { className: "block text-xs uppercase", style: { color: COLORS.violetSoft } }, "Location"), task.location), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", { className: "block text-xs uppercase", style: { color: COLORS.violetSoft } }, "Posted by"), task.poster)),
+      /* @__PURE__ */ React.createElement("div", { className: "flex flex-wrap gap-2 mb-5" }, /* @__PURE__ */ React.createElement(VerifiedPosterBadge, { task }), task.backgroundCheckRequired && /* @__PURE__ */ React.createElement(SafetyBadge, { icon: CheckCircle2, label: "Background check required", tone: "gold" }), task.publicMeetup && /* @__PURE__ */ React.createElement(SafetyBadge, { icon: Users, label: "Public meetup suggested", tone: "gold" }), !task.verifiedPoster && /* @__PURE__ */ React.createElement(
+        SafetyBadge,
+        {
+          icon: AlertTriangle,
+          label: task.posterType === "business" ? "Business not yet verified" : "Poster not yet verified",
+          tone: "gold"
+        }
+      )),
+      task.payType !== "negotiable" && /* @__PURE__ */ React.createElement("div", { className: "mb-5" }, /* @__PURE__ */ React.createElement(FeeBreakdown, { baseAmount: task.payRate, perspective: "worker" })),
+      /* @__PURE__ */ React.createElement(
+        "div",
+        {
+          style: { borderColor: COLORS.line, background: COLORS.bg },
+          className: "rounded-xl border p-4 mb-5 text-sm"
+        },
+        /* @__PURE__ */ React.createElement("p", { style: { color: COLORS.ink }, className: "font-medium mb-1 flex items-center gap-2" }, /* @__PURE__ */ React.createElement(ShieldCheck, { size: 16, style: { color: COLORS.safety } }), " Before you meet"),
+        /* @__PURE__ */ React.createElement("ul", { style: { color: COLORS.inkSoft }, className: "list-disc list-inside space-y-1" }, /* @__PURE__ */ React.createElement("li", null, "Keep all messages and payments inside the app until the task is marked complete."), /* @__PURE__ */ React.createElement("li", null, "Share your live location with a contact for the length of the task."), /* @__PURE__ */ React.createElement("li", null, "Meet in a public place for the first job with a new poster."))
+      ),
+      !applied && /* @__PURE__ */ React.createElement(
+        "div",
+        {
+          style: { borderColor: COLORS.line, background: COLORS.bg },
+          className: "rounded-xl border p-4 mb-5 text-sm"
+        },
+        /* @__PURE__ */ React.createElement("p", { style: { color: COLORS.ink }, className: "font-medium mb-1 flex items-center gap-2" }, /* @__PURE__ */ React.createElement(AlertTriangle, { size: 16, style: { color: COLORS.violetSoft } }), " Injury & illness \u2014 please read"),
+        /* @__PURE__ */ React.createElement("p", { style: { color: COLORS.inkSoft }, className: "mb-2" }, "Omni Work is not responsible for anyone getting hurt or sick in connection with this task. If you're injured or become ill while working, contact the poster (or, if you're the poster, the worker) directly and seek medical attention right away \\u2014 not Omni Work."),
+        /* @__PURE__ */ React.createElement("label", { className: "flex items-start gap-2", style: { color: COLORS.ink } }, /* @__PURE__ */ React.createElement(
+          "input",
+          {
+            type: "checkbox",
+            checked: waiverAccepted,
+            onChange: (e) => setWaiverAccepted(e.target.checked),
+            className: "mt-0.5"
+          }
+        ), /* @__PURE__ */ React.createElement("span", null, "I've read and accept this before starting the task."))
+      ),
+      applied ? /* @__PURE__ */ React.createElement(
+        "div",
+        {
+          style: { background: COLORS.safety + "15", color: COLORS.safety },
+          className: "rounded-xl p-4 text-sm font-medium flex items-center gap-2"
+        },
+        /* @__PURE__ */ React.createElement(CheckCircle2, { size: 18 }),
+        " Application sent \u2014 you'll hear back in the app."
+      ) : /* @__PURE__ */ React.createElement("div", { className: "flex gap-3" }, /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          onClick: () => waiverAccepted && setApplied(true),
+          disabled: !waiverAccepted,
+          style: { background: COLORS.violet, opacity: waiverAccepted ? 1 : 0.45, cursor: waiverAccepted ? "pointer" : "not-allowed" },
+          className: "flex-1 text-white rounded-xl py-3 font-medium"
+        },
+        "Apply for this task"
+      ), /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          style: { borderColor: COLORS.line, color: COLORS.ink },
+          className: "rounded-xl border px-4 py-3",
+          "aria-label": "Message poster"
+        },
+        /* @__PURE__ */ React.createElement(MessageCircle, { size: 18 })
+      ))
+    ));
+  }
+  function PostTaskForm({ onCreate }) {
+    const [form, setForm] = useState({
+      title: "",
+      category: "unskilled",
+      payType: "fixed",
+      payRate: "",
+      location: "",
+      duration: "",
+      backgroundCheckRequired: false,
+      publicMeetup: false,
+      posterType: "individual",
+      businessName: "",
+      postingMember: ""
+    });
+    const [teamMembers, setTeamMembers] = useState([]);
+    const [newMember, setNewMember] = useState("");
+    const [bulkMode, setBulkMode] = useState(false);
+    const [rows, setRows] = useState([{ id: 1, title: "", payRate: "" }]);
+    const [posted, setPosted] = useState(0);
+    const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+    const addTeamMember = () => {
+      const name = newMember.trim();
+      if (!name || teamMembers.includes(name)) return;
+      setTeamMembers((m) => [...m, name]);
+      set("postingMember", name);
+      setNewMember("");
+    };
+    const addRow = () => setRows((r) => [...r, { id: Date.now(), title: "", payRate: "" }]);
+    const removeRow = (id) => setRows((r) => r.length > 1 ? r.filter((row) => row.id !== id) : r);
+    const setRow = (id, k, v) => setRows((r) => r.map((row) => row.id === id ? { ...row, [k]: v } : row));
+    const posterName = () => {
+      if (form.posterType !== "business") return "You";
+      const base = form.businessName || "Your business";
+      return form.postingMember ? `${base} \u2014 ${form.postingMember}` : base;
+    };
+    const baseTask = () => ({
+      category: form.category,
+      payType: form.payType,
+      location: form.location,
+      duration: form.duration || "Not specified",
+      poster: posterName(),
+      posterType: form.posterType,
+      // New business accounts start unverified until they complete the verification review.
+      verifiedPoster: form.posterType === "individual",
+      backgroundCheckRequired: form.backgroundCheckRequired,
+      publicMeetup: form.publicMeetup,
+      applicants: 0
+    });
+    const resetShared = () => {
+      setForm((f) => ({
+        ...f,
+        title: "",
+        payRate: "",
+        location: "",
+        duration: "",
+        backgroundCheckRequired: false,
+        publicMeetup: false
+      }));
+      setRows([{ id: Date.now(), title: "", payRate: "" }]);
+    };
+    const submit = (e) => {
+      e.preventDefault();
+      if (!form.location.trim()) return;
+      if (bulkMode) {
+        const validRows = rows.filter((r) => r.title.trim());
+        if (validRows.length === 0) return;
+        const tasks = validRows.map((r) => ({
+          ...baseTask(),
+          id: Date.now() + Math.random(),
+          title: r.title,
+          payRate: form.payType === "negotiable" ? null : Number(r.payRate) || 0
+        }));
+        onCreate(tasks);
+        setPosted(tasks.length);
+      } else {
+        if (!form.title.trim()) return;
+        const task = {
+          ...baseTask(),
+          id: Date.now(),
+          title: form.title,
+          payRate: form.payType === "negotiable" ? null : Number(form.payRate) || 0
+        };
+        onCreate([task]);
+        setPosted(1);
+      }
+      resetShared();
+      setTimeout(() => setPosted(0), 2500);
+    };
+    return /* @__PURE__ */ React.createElement(
+      "form",
+      {
+        onSubmit: submit,
+        style: { background: COLORS.panel, borderColor: COLORS.line },
+        className: "rounded-xl border p-6 max-w-xl mx-auto flex flex-col gap-5"
+      },
+      /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", { style: { color: COLORS.ink }, className: "block text-sm font-medium mb-2" }, "Posting as"), /* @__PURE__ */ React.createElement("div", { className: "flex gap-2 mb-3" }, [
+        { v: "individual", label: "Individual" },
+        { v: "business", label: "Business / organization" }
+      ].map(({ v, label }) => /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          key: v,
+          onClick: () => set("posterType", v),
+          style: {
+            borderColor: form.posterType === v ? COLORS.violet : COLORS.line,
+            background: form.posterType === v ? COLORS.violet + "1F" : "transparent",
+            color: COLORS.ink
+          },
+          className: "flex-1 rounded-lg border px-3 py-2 text-sm"
+        },
+        label
+      ))), form.posterType === "business" && /* @__PURE__ */ React.createElement("div", { className: "flex flex-col gap-3" }, /* @__PURE__ */ React.createElement(
+        "input",
+        {
+          value: form.businessName,
+          onChange: (e) => set("businessName", e.target.value),
+          placeholder: "Business or organization name",
+          style: { borderColor: COLORS.line },
+          className: "w-full rounded-lg border px-3 py-2 outline-none focus:ring-2"
+        }
+      ), /* @__PURE__ */ React.createElement("p", { style: { color: COLORS.inkSoft }, className: "text-xs flex items-start gap-1.5" }, /* @__PURE__ */ React.createElement(Building2, { size: 14, className: "shrink-0 mt-0.5", style: { color: COLORS.violetSoft } }), 'New business accounts show as unverified until our team confirms the organization \u2014 after that a "Verified business" badge appears on every task you post.'), /* @__PURE__ */ React.createElement("div", { style: { borderColor: COLORS.line, background: COLORS.bg }, className: "rounded-lg border p-3 flex flex-col gap-2" }, /* @__PURE__ */ React.createElement("span", { style: { color: COLORS.ink }, className: "text-xs font-medium flex items-center gap-1.5" }, /* @__PURE__ */ React.createElement(Users, { size: 13, style: { color: COLORS.violetSoft } }), " Team members who can post under this account"), teamMembers.length > 0 && /* @__PURE__ */ React.createElement("div", { className: "flex flex-wrap gap-2" }, teamMembers.map((name) => /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          key: name,
+          onClick: () => set("postingMember", name),
+          style: {
+            borderColor: form.postingMember === name ? COLORS.violet : COLORS.line,
+            background: form.postingMember === name ? COLORS.violet + "1F" : "transparent",
+            color: COLORS.ink
+          },
+          className: "rounded-full border px-3 py-1 text-xs"
+        },
+        name
+      ))), /* @__PURE__ */ React.createElement("div", { className: "flex gap-2" }, /* @__PURE__ */ React.createElement(
+        "input",
+        {
+          value: newMember,
+          onChange: (e) => setNewMember(e.target.value),
+          placeholder: "Add a team member's name",
+          style: { borderColor: COLORS.line },
+          className: "flex-1 rounded-lg border px-3 py-1.5 text-sm outline-none focus:ring-2"
+        }
+      ), /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          onClick: addTeamMember,
+          style: { borderColor: COLORS.violet, color: COLORS.violetSoft },
+          className: "rounded-lg border px-3 py-1.5 text-sm"
+        },
+        "Add"
+      )), /* @__PURE__ */ React.createElement("p", { style: { color: COLORS.inkSoft }, className: "text-xs" }, "Posting as: ", /* @__PURE__ */ React.createElement("span", { style: { color: COLORS.ink } }, posterName()))))),
+      /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", { style: { color: COLORS.ink }, className: "block text-sm font-medium mb-2" }, "How many tasks?"), /* @__PURE__ */ React.createElement("div", { className: "flex gap-2" }, [
+        { v: false, label: "One task" },
+        { v: true, label: "Multiple tasks at once" }
+      ].map(({ v, label }) => /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          key: label,
+          onClick: () => setBulkMode(v),
+          style: {
+            borderColor: bulkMode === v ? COLORS.violet : COLORS.line,
+            background: bulkMode === v ? COLORS.violet + "1F" : "transparent",
+            color: COLORS.ink
+          },
+          className: "flex-1 rounded-lg border px-3 py-2 text-sm"
+        },
+        label
+      )))),
+      bulkMode ? /* @__PURE__ */ React.createElement("div", { className: "flex flex-col gap-3" }, /* @__PURE__ */ React.createElement("span", { style: { color: COLORS.ink }, className: "block text-sm font-medium -mb-1" }, "Tasks"), rows.map((row, i) => /* @__PURE__ */ React.createElement("div", { key: row.id, className: "flex gap-2 items-start" }, /* @__PURE__ */ React.createElement(
+        "input",
+        {
+          value: row.title,
+          onChange: (e) => setRow(row.id, "title", e.target.value),
+          placeholder: `Task ${i + 1}, e.g. Assemble a bookshelf`,
+          style: { borderColor: COLORS.line },
+          className: "flex-1 rounded-lg border px-3 py-2 text-sm outline-none focus:ring-2"
+        }
+      ), form.payType !== "negotiable" && /* @__PURE__ */ React.createElement(
+        "input",
+        {
+          type: "number",
+          min: "0",
+          value: row.payRate,
+          onChange: (e) => setRow(row.id, "payRate", e.target.value),
+          placeholder: form.payType === "hourly" ? "$/hr" : "$ flat",
+          style: { borderColor: COLORS.line },
+          className: "w-24 rounded-lg border px-2 py-2 text-sm outline-none focus:ring-2"
+        }
+      ), /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          onClick: () => removeRow(row.id),
+          style: { color: COLORS.inkSoft },
+          className: "px-2 py-2",
+          "aria-label": "Remove task"
+        },
+        /* @__PURE__ */ React.createElement(X, { size: 16 })
+      ))), /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          onClick: addRow,
+          style: { borderColor: COLORS.line, color: COLORS.violetSoft },
+          className: "rounded-lg border border-dashed px-3 py-2 text-sm flex items-center justify-center gap-1.5"
+        },
+        /* @__PURE__ */ React.createElement(Plus, { size: 14 }),
+        " Add another task"
+      )) : /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", { style: { color: COLORS.ink }, className: "block text-sm font-medium mb-1" }, "What do you need done?"), /* @__PURE__ */ React.createElement(
+        "input",
+        {
+          value: form.title,
+          onChange: (e) => set("title", e.target.value),
+          placeholder: "e.g. Assemble a bookshelf",
+          style: { borderColor: COLORS.line },
+          className: "w-full rounded-lg border px-3 py-2 outline-none focus:ring-2"
+        }
+      )),
+      /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", { style: { color: COLORS.ink }, className: "block text-sm font-medium mb-2" }, "Job type"), /* @__PURE__ */ React.createElement("div", { className: "flex gap-2" }, [
+        { v: "unskilled", label: "General labor", icon: HardHat },
+        { v: "skilled", label: "Skilled / professional", icon: Briefcase }
+      ].map(({ v, label, icon: Icon }) => /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          key: v,
+          onClick: () => set("category", v),
+          style: {
+            borderColor: form.category === v ? COLORS.violet : COLORS.line,
+            background: form.category === v ? COLORS.violet + "1F" : "transparent",
+            color: COLORS.ink
+          },
+          className: "flex-1 rounded-lg border px-3 py-2 text-sm flex items-center justify-center gap-2"
+        },
+        /* @__PURE__ */ React.createElement(Icon, { size: 16 }),
+        " ",
+        label
+      )))),
+      /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", { style: { color: COLORS.ink }, className: "block text-sm font-medium mb-2" }, "Pay ", bulkMode ? "type (rate set per task above)" : ""), /* @__PURE__ */ React.createElement("div", { className: "grid grid-cols-3 gap-2 mb-2" }, [
+        { v: "fixed", label: "Flat rate" },
+        { v: "hourly", label: "Hourly" },
+        { v: "negotiable", label: "Negotiable" }
+      ].map(({ v, label }) => /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          key: v,
+          onClick: () => set("payType", v),
+          style: {
+            borderColor: form.payType === v ? COLORS.violet : COLORS.line,
+            background: form.payType === v ? COLORS.violet + "1F" : "transparent",
+            color: COLORS.ink
+          },
+          className: "rounded-lg border px-2 py-2 text-sm"
+        },
+        label
+      ))), !bulkMode && form.payType !== "negotiable" && /* @__PURE__ */ React.createElement(
+        "input",
+        {
+          type: "number",
+          min: "0",
+          value: form.payRate,
+          onChange: (e) => set("payRate", e.target.value),
+          placeholder: form.payType === "hourly" ? "Rate per hour, e.g. 25" : "Total pay, e.g. 60",
+          style: { borderColor: COLORS.line },
+          className: "w-full rounded-lg border px-3 py-2 outline-none focus:ring-2"
+        }
+      ), !bulkMode && form.payType !== "negotiable" && Number(form.payRate) > 0 && /* @__PURE__ */ React.createElement("div", { className: "mt-2" }, /* @__PURE__ */ React.createElement(FeeBreakdown, { baseAmount: Number(form.payRate), perspective: "poster" }))),
+      /* @__PURE__ */ React.createElement("div", { className: "grid grid-cols-2 gap-3" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", { style: { color: COLORS.ink }, className: "block text-sm font-medium mb-1" }, "Location"), /* @__PURE__ */ React.createElement(
+        "input",
+        {
+          value: form.location,
+          onChange: (e) => set("location", e.target.value),
+          placeholder: "Neighborhood or Remote",
+          style: { borderColor: COLORS.line },
+          className: "w-full rounded-lg border px-3 py-2 outline-none focus:ring-2"
+        }
+      )), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", { style: { color: COLORS.ink }, className: "block text-sm font-medium mb-1" }, "Est. duration ", bulkMode ? "(each)" : ""), /* @__PURE__ */ React.createElement(
+        "input",
+        {
+          value: form.duration,
+          onChange: (e) => set("duration", e.target.value),
+          placeholder: "e.g. 2 hours",
+          style: { borderColor: COLORS.line },
+          className: "w-full rounded-lg border px-3 py-2 outline-none focus:ring-2"
+        }
+      ))),
+      /* @__PURE__ */ React.createElement(
+        "div",
+        {
+          style: { borderColor: COLORS.line, background: COLORS.bg },
+          className: "rounded-lg border p-4 flex flex-col gap-3"
+        },
+        /* @__PURE__ */ React.createElement("span", { style: { color: COLORS.ink }, className: "text-sm font-medium flex items-center gap-2" }, /* @__PURE__ */ React.createElement(ShieldCheck, { size: 16, style: { color: COLORS.safety } }), " Safety requirements for applicants"),
+        /* @__PURE__ */ React.createElement("label", { className: "flex items-center gap-2 text-sm", style: { color: COLORS.inkSoft } }, /* @__PURE__ */ React.createElement(
+          "input",
+          {
+            type: "checkbox",
+            checked: form.backgroundCheckRequired,
+            onChange: (e) => set("backgroundCheckRequired", e.target.checked)
+          }
+        ), "Require a passed background check"),
+        /* @__PURE__ */ React.createElement("label", { className: "flex items-center gap-2 text-sm", style: { color: COLORS.inkSoft } }, /* @__PURE__ */ React.createElement(
+          "input",
+          {
+            type: "checkbox",
+            checked: form.publicMeetup,
+            onChange: (e) => set("publicMeetup", e.target.checked)
+          }
+        ), "Suggest meeting in a public place first")
+      ),
+      /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "submit",
+          style: { background: COLORS.violet },
+          className: "text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2"
+        },
+        /* @__PURE__ */ React.createElement(Plus, { size: 18 }),
+        " ",
+        bulkMode ? "Post all tasks" : "Post task"
+      ),
+      posted > 0 && /* @__PURE__ */ React.createElement(
+        "div",
+        {
+          style: { background: COLORS.safety + "15", color: COLORS.safety },
+          className: "rounded-lg p-3 text-sm font-medium flex items-center gap-2"
+        },
+        /* @__PURE__ */ React.createElement(CheckCircle2, { size: 16 }),
+        " ",
+        posted > 1 ? `${posted} tasks posted` : "Task posted",
+        " \u2014 workers nearby can now apply."
+      )
+    );
+  }
+  function SafetyCenter({ open, onClose }) {
+    if (!open) return null;
+    return /* @__PURE__ */ React.createElement("div", { className: "fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/40 p-0 md:p-6" }, /* @__PURE__ */ React.createElement(
+      "div",
+      {
+        style: { background: COLORS.panel },
+        className: "w-full md:max-w-md md:rounded-2xl rounded-t-2xl p-6 max-h-[90vh] overflow-y-auto"
+      },
+      /* @__PURE__ */ React.createElement("div", { className: "flex items-start justify-between mb-4" }, /* @__PURE__ */ React.createElement("h2", { style: { color: COLORS.ink }, className: "text-xl font-semibold" }, "Safety center"), /* @__PURE__ */ React.createElement("button", { onClick: onClose, style: { color: COLORS.inkSoft }, "aria-label": "Close" }, /* @__PURE__ */ React.createElement(X, { size: 20 }))),
+      /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          style: { background: COLORS.danger },
+          className: "w-full text-white rounded-xl py-4 font-semibold flex items-center justify-center gap-2 mb-5"
+        },
+        /* @__PURE__ */ React.createElement(AlertTriangle, { size: 20 }),
+        " Send emergency alert"
+      ),
+      /* @__PURE__ */ React.createElement("p", { style: { color: COLORS.inkSoft }, className: "text-xs -mt-3 mb-5" }, "Shares your live location and task details with your emergency contact and our safety team."),
+      /* @__PURE__ */ React.createElement("div", { className: "flex flex-col gap-4 text-sm", style: { color: COLORS.inkSoft } }, /* @__PURE__ */ React.createElement("div", { className: "flex gap-3" }, /* @__PURE__ */ React.createElement(ShieldCheck, { size: 18, style: { color: COLORS.safety }, className: "shrink-0 mt-0.5" }), /* @__PURE__ */ React.createElement("p", null, /* @__PURE__ */ React.createElement("strong", { style: { color: COLORS.ink } }, "ID verification."), " Verified members have confirmed a government ID. Look for the badge before accepting a task.")), /* @__PURE__ */ React.createElement("div", { className: "flex gap-3" }, /* @__PURE__ */ React.createElement(MessageCircle, { size: 18, style: { color: COLORS.safety }, className: "shrink-0 mt-0.5" }), /* @__PURE__ */ React.createElement("p", null, /* @__PURE__ */ React.createElement("strong", { style: { color: COLORS.ink } }, "In-app chat only."), " Phone numbers and payments stay inside the app so there's a record if anything goes wrong.")), /* @__PURE__ */ React.createElement("div", { className: "flex gap-3" }, /* @__PURE__ */ React.createElement(Star, { size: 18, style: { color: COLORS.safety }, className: "shrink-0 mt-0.5" }), /* @__PURE__ */ React.createElement("p", null, /* @__PURE__ */ React.createElement("strong", { style: { color: COLORS.ink } }, "Two-way ratings."), " Both sides rate each other after every task; low-rated accounts are reviewed.")), /* @__PURE__ */ React.createElement("div", { className: "flex gap-3" }, /* @__PURE__ */ React.createElement(Users, { size: 18, style: { color: COLORS.safety }, className: "shrink-0 mt-0.5" }), /* @__PURE__ */ React.createElement("p", null, /* @__PURE__ */ React.createElement("strong", { style: { color: COLORS.ink } }, "Check-in tracking."), " Share live location for the duration of a task with one trusted contact, with one tap."))),
+      /* @__PURE__ */ React.createElement(
+        "div",
+        {
+          style: { borderColor: COLORS.line, background: COLORS.bg },
+          className: "rounded-lg border p-4 mt-5 text-sm"
+        },
+        /* @__PURE__ */ React.createElement("p", { style: { color: COLORS.ink }, className: "font-medium mb-1" }, "A note from the founder"),
+        /* @__PURE__ */ React.createElement("p", { style: { color: COLORS.inkSoft } }, "Honestly, if I had a million dollars in the bank, I'd just pay for everything myself \u2014 every safety feature, no waivers, no waiting on any of this. I don't, not yet. But seriously: be safe out there. I love y'all.")
+      )
+    ));
+  }
+  function App() {
+    const [tab, setTab] = useState("browse");
+    const [tasks, setTasks] = useState(SEED_TASKS);
+    const [categoryFilter, setCategoryFilter] = useState("all");
+    const [payFilter, setPayFilter] = useState("all");
+    const [verifiedOnly, setVerifiedOnly] = useState(false);
+    const [openTask, setOpenTask] = useState(null);
+    const [safetyOpen, setSafetyOpen] = useState(false);
+    const filtered = tasks.filter((t) => {
+      if (categoryFilter !== "all" && t.category !== categoryFilter) return false;
+      if (payFilter !== "all" && t.payType !== payFilter) return false;
+      if (verifiedOnly && !t.verifiedPoster) return false;
+      return true;
+    });
+    return /* @__PURE__ */ React.createElement("div", { style: { background: COLORS.bg, fontFamily: "Inter, ui-sans-serif, system-ui" }, className: "min-h-screen w-full" }, /* @__PURE__ */ React.createElement("style", null, `
+        h1, h2, .display { font-family: 'Space Grotesk', Inter, ui-sans-serif, system-ui; }
+        input, textarea, select { background: ${COLORS.panelAlt}; color: ${COLORS.ink}; }
+        input::placeholder, textarea::placeholder { color: ${COLORS.inkSoft}; opacity: 0.8; }
+        input:focus, textarea:focus { box-shadow: 0 0 0 2px ${COLORS.violet}66; border-color: ${COLORS.violet}; }
+        @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+      `), /* @__PURE__ */ React.createElement("header", { style: { borderColor: COLORS.line }, className: "border-b sticky top-0 z-30 backdrop-blur bg-[rgba(15,13,21,0.85)]" }, /* @__PURE__ */ React.createElement("div", { className: "max-w-5xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between gap-4" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-2" }, /* @__PURE__ */ React.createElement("div", { style: { background: COLORS.violet }, className: "w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden" }, /* @__PURE__ */ React.createElement("img", { src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYAAACOEfKtAAAfdklEQVR42p2dWawk13nff985tXT33WbjDMkhhxRJiaQoi9pMSbFlKbEUSZEsOXlQkDiIgCSGgSCxFcBO9BBY9EPe8pA4BoTAcGQgtmEbiewYTmQEkKIlWuxQ1E4posSdHHJmOHfrpbZzvjyc6u7a+g6RAWbQfW931alv/X/ryCd2jxUEEQFAVUGE8C68FwSt38vqn/Uf1eHfaf2PNN7XtwmvNXxeu5dU0PqOy5M03yu6Om/4pq7O0TqDSn2/8G3V9n2a95X6i7o+Oc2XujqLth48Qm2DCAqYFlFAWgda31RRXf5u+QACun64JhNWD7++8IrANJlXfy8QSlaEW9+1flAFkfr3Kv1rrj63FAhZMUZEVh/UjhCwOun6uVdnFml/TiFaHaIm0JIgKksJkcZ5OvyR5jvp/X7FL6HL1+E/9RfW9FCGL7iU3KboD4lWh1mrc+j6WjJ8lCVfdaklOnQvXYpbi8kNAknjsP0btH+qg4do31WRrlQ3VFSQ1S1752icBZGGCg9QsHXthgERGHrePiOlQbTuM2rrRmZICsKDmNWFhkRHTpQo7ZFQexyQlVWRjcfbdOW1RRxkntL77Ypm0mbS8PE1mKIWTaXFkCVPjaoOir+wgalD8tUQkP57bRygq/6BFLqBJU230bRXtXj0VZS+Jknr7Bpo0/iJcLIa34iZpnOHBssCF9b0Vbp3lSUBtHYgLQZqR9XbqiCDR5UBpmnLm8sJsq+9NwMkkJY8hpPoJoN8goGqf2CWBq5LR+3pQpNA2vJXTVslA8zQQS3RzcZINzmFAc2QDY8sPb/d52PnRoIMSt4m0ymAuZE5EIa81bCkMOAVb2hvGt+XAfzVdQpr66qD15FBS32Stdaes29eX7t2UFbmew36evZpSBz0pIM2pK1W/ZOUQQceQrr2UU7UzbW0tHjWNsa6uvKAjxg8oK4uIQOusIdhUYwuOdQx6noCTzdBqLa3uwHY42StZdMDbrinNOGWdM8jHaenrQhEZPghpMs06dJBMGsf11WnzZ6pFaQIHXLLDfVWum5eh6HYjWVeWwz1S/ihA/ZLN59GuYG77XNkJWxmALV2nk1PVD+GvHRLi/X/CyPoisibTHvDU8iNfXo7dl6/liGs3KGUqm7UEKNdgy8nQ1jpQDHtKfZmOKAbjP8w9taBCKahI9pBhrIhAGFYHfuQhg2gX09gvmCkFVsOfb6h4jqAJYReWDb8so469AbRi3SwaE1IpS3V0jYaA15BbhBotiHWOiaSnmEMzFFaeG+JA1dn1AFDocFNS9duaUdidAhOSCPLsr62LDMjfYzQdYabpb+L27TNJln9UNgcS65iheA4RQdAnzauKM2rN5MJulm5ZGOwdKIPbQlPP55qwxXtIKVmBkg3JTBkLRVKBy7rymZJV7K0laxaH0ulx+SmnKt2AgBdf9v0cmAbcaec6FVlEGRpL65W7USpm4LuZb5OG7GyDNvHjcyVpp+RXrZpleBpfgZ6cXYv29vQCNN0GrLZjG08aiufos0H1RMB2ybT2dZh6ZjHrkOSgbOun0VVGUyWNLVNGtfWbgb6xvG6aXKyCUiHYlgZDBJ0APG3iaoNgVMdcLnacFCd8Fs2Slo3G9O1Gc3LL8ktLbPRB2ja8K7Se1iRTr4QiHqsWN5hIPaVjXZwrQuKYpZsEWnHm9qGKaugTGpV1XVtYmMWopmq70LAZSlBQSVct5U5WjJKhhNoekL4qo2kC426UdS6kG7CGdp1TB1boogJ4qUlVDn4al3EUUAM2ARsLIgJhlj95gBNdXO+lGZKXtteXEytug58Fe6hEJgagbF1qt4vU3DDiF67t1gVwKRVGItaDlHWjltPMsyNRJbYcNDiOFx4fFrZuUXZviAkO+Gw5UKYX4fjF2F+JbyPEojG9aEcG+C4tKShlVVu1GgEwILLoZwHIo32YHReSbaC3pRTJTuA/FhwpRCNIBrV0ux1Y7zereu08wBKtLRLm2yNDEAqlpz2Qn4ojE557vpgxZ0/o1x4QNi5EBFPDGJBxKAKroDsUDl40vHCo54nPi+8+J0gqelOfWfPiclEkT6KF6u4DMpj4dQlz53v8Nz+NuHcPcLWOUs0CkCjzDyL68r+k57nH1We/IJw7YeCiSEeL5monWxOM5RYJ5DXxlyQh3cXulbRvuyt6rANnCUWqoUgRrj3Qzmv+4jj3D0WG0X40qDOYIxgY4ONBGPWEEKsgnHkR47nHlG+/cfKjz8XRD/ZErxTBnP/nSBIa5yeHwnbtzge/IWS+z4g7F2MMRKhzoAKxoAxghgCQ62i6pherfjR5zyPfEq48l1htNtAMCKDIL6vkx55eHe+JmrTfkoL3Ky4YyzkR7B3h+Ptv7bg9rcCZQKlQaxhtGXZOhWTjIKhd86vJCvUhQVfCc4pYjxVVfHklxxf/S3hhUeFdLeu9yobMEVtgxTymfDq9+c89M9Kzl6K0TJBK4ONhdGWIUrAe0+Ze6rS1/ZQMGKxEUQjz+x6xV/+R+XRT0XYpCawX6MxPbF8poGAS++nNyjYihWKI+HmN+X89K9P2T4X4bOEOLEkqWH3poTRlmV+XHK0n5PNCqrCoT4QxVghTi2jcUI6iYhMhHeCxI7Fcclf/bby9d+JVg5npVasoxMRwAeT8OZ/OufBf+CwfoT4CBsL6ZZhshtRFp7j/ZzFNCfPK7xzoctChCiOSJKYJI5JUkO05fnen3o+9xsRqsGG6qZgQpqmRYlUZRCerDW+lkMbHMUtP5nzU584IE5iypklGQnJxHL21hHeOZ7/8RFH+wvKvKByrjbQS8hhMNYQRRFJGjPeStjaToldTBylvONfFFx4Xclnfz0iOxSSreCgVgpgAlG1grd9/Jj7PuRxszE2sdhU2DoVkUwMh9dyDq7Nyec5RVniqgrvdUVAY8IZ0jRhPEmJ5wn3/5xgkoL/+fEENdKBJptBQCRL99sr/zcciVGqueH03QUPffxlxERQWaKxIZ1EnLs4YnFc8tIzx8xnC4qioCxKSlfhna8PDmIMxloiYymKmDwrmE8LJtspk0mKTGPu+VnYvlDymV+NOXxWSLfBl3XxwYfXb/1Xh9zzfk91NCYZCSYRds4lGAtXnp1xtD+jyAryvKAoS6qqwtUSiAjWGOI4DuesKiZbDn91xD3vgcPnCr78b1NGe4p3G2rGDepEK+w31J2ga5gRjZQ3fuw60VihjIgmhmQUceaWQLzLTx2RzTOyPCfLFiyygqIocM7hfTCC1lqiOCKOYpIkJo1jyrKkKkuKrGRre4StEi7cL3z4kyX//WMR1x83JDvgHVSZ8JaPHXDXe0v8dEIyFqJY2LspATwvPjVlejgnz3PyPGeR5SwWOUVRa4MqRqTWgITxKMU7B+qRbdCXE173dyuef6Tk6S/GJDvaglitVhJdErCZbRjIF4iF4tDy2o/us3dPhjsek2wLNjLsnElxhXL1uRn5IhBvvphzfDxnNl2wyDLKssJ7sEaIEkMSRyRJQpomjEYpo6qkKouVlEy2POoT9m6N+OB/qPjzfx5x/UcWVHjtPzzgrg8u8MdbpBODjQy7Z0d4r1x99pjp0Zwsy8myjOl0wXQ2Y55NyfKCsgDxwcEkScxkvCReIKq1FhkbjDe86RcLLn/dopUM9/U0nEa06glaQZvGR43gcmHnUsnt771OeRyRJgG+pFsxcWLYf2lBlgUuZ1nG0dGco/l1FtWc0nmc96h4fAUsEqyxpKOc8SihKEqKUcpolOC8x3vFe2UyUWKXsHs+4gP/vuRP/7Gwd/+Me//+EX66RTIO8GjndIqiXHt2GoiX58wXC46PZ8zKfebZgsXLFl/EMMko7YzFNCaOKqqyWtlEawxRZImTGJknnLtXedW7K37wJynpnkfdAMCvrVzUgj3S7ZlTXGa4/d2H2J0KnacYG/DdaBKRzSoWs4yyKCnKktl8wcJdZ/HCiPl376K8uo1WgtkqMLdfhjuewlvL7NhTFCVlVVFVJc6N0Jp4y3TYeEthlrB7c8QHP1lwfXqEm0ckqcEYGG9FGAMvXw7Ey/OcxTxnOp8yK/Y5ePQMR4+8nvLKNuoMdidn9LpniB/4AXmWoeqDR7YRSRSRJjFVWRJHEVoJd7+v4EefSdbhZt2qtaTX0upFfeDcgImVMDrtOP/QEdVcGNWRRRRbjAiLWUlVOpxz5HlFIVP2v3gH1/7ibnwegdG6RcxgvnkH/qbbcG/7PGfuLajm2xxVc1wtpd7rqqrmlznAiaKzhFO3RiSz0xxcnwNCPIqwsWH/ymxl8xaLgnk+ZXY844U/vp/jR28DoxC5IAhXtsk/8yDbV06R/OxXyaclUWTJ85KicpSVo6oqFI8rLGdfU3Dm7oprP7R1yDfQziR1PrBXg1FFDPjccPrenOSmDF8YxISowlqDrzxFVuEqR1l6XDJn/2vneenT94IodqvAjEokrTDjAsYZdv8i7s8+wPc/MyWPXsSScnw0ZzpdMJvPmM8XzLOMLMvI5hmLeTANZa6M0pS901uIDfb3eH/B4f6UxSJjsciZF3PmswXPfuoBDh+5DTPJw/1NndSNHWZnzvTRS8hj9xNvlxR5IJqrHM75GjGAqCHeEs6/vsQXdVZHB1J6yhIHNjIu2mjqcbB73yEqrtUwJEBVepxzOK+olJQHEZf//BIyqhADeNOBUoKPMrbiPaLvfJRvXvsk9/2dH3JTej/T4+kqJxjazwxS58SWPTRpmjBKY6wVjo/mLGY5RZ6T52Xw/OUxT//ua5h+/yzxTo53nQKHFxCDpAWL/3M3O/c9TWazYKNrYKeNQruqcPoeF56FdWeutsqkGnpj+oV1Cdn+qMRevIIravhfZ3jVhxDN+wBxTOo4/PYp8mspNtFWp1YzRS5qqXxBuh3xwEu/zLd+z3N59i22xjvMZhnzRcFslrFYLIJkZRlZFtQzL0q8eiJrETVMpwvmi/C7jCOe+6+3c/it89idoiZeF04EKZJIKa+PMS9dIB4rsmSasRhjQs+fCbBpct5h07VQSStnulThoYSbKOJj8vRldPdlfGGAYJuWf3Vp8AWMMRw9vl0namWwg2HNGoNzFWbseMvsV/nu71ueO/oGk9Eu81nOYpExny9YLBY1JMkpspx8UVAUJd57trbG7O7tMD3OKewhV79whqv/6xLRdoE6aSVtpWfZFe8Ed/UU40lEFEVYa7HWBJwahWhJHURbHpsoeAYKO7qsWmqvtqG1tMyi53HxDF9JIFpNOHV1wE0Ii4xGFAfxih2dMtZgTOm8h6TgocW/5Ad/OOLy7NskccpinteSFaQvy8PfPMspsuC5vfecPb3HxTtPc+0bI1749D3YcQVe6u5a2VBfkXVvdR7gU5LGxEkcCBlZoiTCmPC8YoMv0FWdud9xa4IfkV7BQ4CcfTAO7xWnHq8e9T5kWDRkocUYojjCRiH74rvlAOm2S2gthyYwJc150/xj/OAPJuzPn0ckIluUZFnAlXlRrP/mBXlWUlYO7zy33HqWS+fupZzXNzFDXT69Fq5guxIYj0eMx2OSJAkRUhqRpBEqtZnyFaq+00hOt6iknTzqmtJVVVG5sk5LhZDMeU9VvzamjitHlu1b66zLxu4sGSyMO6lQNbxh+yO4UjmYHuKckmVFCMmynKIoyYuSPC8o84IiK6h8RX5seO2H4V2fyKnykCbDSKdANFyhmNxcMh5PGE9GjEYpaRozHsfEqaWqgjdezBeUZdVPVTWaA8xQWV0IiUiKCdPZDGMkeFzncJWrsZ8P4VlksSbi5jdVNWSoxV0H2jU6FUCMJy63Odp+jL2/90WQiGeefZqDwwNcpQGjFYGQRVGsX9dEdL4kPzTc//Pw7n+TIwJVFtJR7a6ABuucEG05zr0uZxRtsb01ZjxKSUcx460YMVAWFSLKwdVjytzXnpiORGstgZ1KWU1XvIFJdTMHV+aYWKkqR1UTsSodVRWQfJwYtIi5+JDn7L0V1UwQO9jo0ZYJ40mqCc/wZW7/pW9w/pZz3HLuVi7ddpEXrrzA/uERVakho1IUFGVBUebk5ZKQBUVe4rQiPzC8+m8K7//NjK2bPNlBSPyKbY9HmFgpjiNu+eljztwNY7vNpJbAySRlvB1TZI4ir/BS8eJTx4iLW+Ft1zoZGewVBk/Btl7k5adKiApcFVS3clVQ7TLYRmsMkbGkE8ubfikDo2ilaynoNV2F3yXlhO9X/4NX/8r3efAn3sjO+BR33HkLb3rDA9x/790899Jz7B8eU5YuSFxekJclZVWSV0UNsAvKvMRRkh8KF99o+NBvF9z17or8SChnErIpGmovi5ctN70+44GPHpGwzfbOhPFkzGiSsnN6BCLMjgucUxb5lMuPlSR2jK9T1DKQbbHvGv3rh6WVcF2S1JGywwvlo9zzU2MoxogJkMWIwRqDjSxxHGOtweXC7p2OyXnH019I8BXYdN0NGhyOYsTgphGPj/+EN//ay/zMQ+/BV7CzN2Fvb4edvS1O7e3iXMUTTz/FeLRFHMeIgLXSqMg1snAaSpZaWkY7hrveU3Hqror8CIrjUKwan1Lu/ls5b/6VI0bbMakdkU5SRuOEnVMJk72Y6X7O4cECI4ZnLz/B935/i1NyCUex7lzo1Gai4Qp9sGFpKkTPPMDTTz/Oay5eYJHNg7s3JUUZYfMy5NaSmDgNJcXXfKBicnbG1z85Yv/xCNVQOUMJQX2iVG/5Ej/3j7a57453kC1ydk/tkI5jxmNLkVcUecndr3oVeZbz1HNPYcyrsHY3FKeajZfN0QoBTYE8xpiYe9/nueuvVxxdVoqZMjrtSc94qvkIUUucWGxkGW9HTPYsi+OSo4OMIi9IxobvfuV50v33oHsl4k2jyaatsNG60Cmttg4wlJJzofxJfvS/v8V9H81wx56yrLDGElUlUWFZ1Ag+TiwiQrkw3P52x/mfmPPsVywvfj1i9mKA7DsXPRfeNuOmB19FqnuUZcHO3hbpOGZ7N8ZXjtlxjhHLaDTi9tsuMpsteP6lZxlNLoGdrLPn2u3pVvCKphrSUtMIYyPO3BY+4cpQRxmloTYTRYZkYhlNhMW0ZP9qiH7wlsvXn+CJz6RcSi/gdF7XEhhsm4t68KKhFs6V7Ex22P/aW3juvU9yfvseiiLHWkNUWqwxdY1BEBNAqY0MZR4I+ur3Oe55b0FV1B4rVrRKcNkYjLI1GjPaitk+lVAVjsOX55R5hXoNdQuTcPr8hOTJcxz+4V/D/u1vYy/MYNbueFXW0VHI7Hh84klMBM5ijMXGQBrQhY0EmxgE5Xg/Y3pYA/ZFyXjb8MX/8h22n/kwcqoC1x+ibKvwpi4/AcFSmQU3Td/KE//tgPP/ZIqfx5S2qOPGdSeoV2WypUwmKckooiqhKjyuUuwyUZGFlth4HLz3ZDcmrat4+1dmZPOCsqyCsyo9TjKSapvsS++ieOE0L//eBD7yCFt3HMNsZ9XTt+yrUVW8DyC/qhxVHBHFUUiWxnZ1Zu+hmBbk85wsKynKijzLSOKEb33/a7z46fu5c/tWCj8POQHVVm1cGmOw0XAfTLtHJNmGxVfexYsPfpMLb6zIjxQxptOFqngX6q9b2wmjcYzZSUIU4+rGISNEUSBelAjOeQ6uLDjan1PkVaiNlAEw5+WcqiyY/dnbKa7sYnbnVPtbXP3dt1P+/COcesMBstgNidiagCFO9zj1RC7CVR5TuuDwbEjHIawk1dXQrCwKRA0vTR/nq79puJi/k3I8R7z0goAujIna+Fb7HQAqOCrSJOXFP3gje7d+F3tmRpmbddNiJ0tTFBXpKGY0ThhNQu01NBWFcK8qHEcHBfOjgjwrcDUsKqoQwi2KGYvimJf+6EEWPz6PmeSos0haQRXz8h+9leLqd7jpb1xGqwk6Dwx03uF8TOQdsXdU1mErgzEhASyyHltU9TjvKIsKRMnkKp//dwvOPPFBzCod1ujXEGmPBGkdd39iN9N2/b3TtrislRjFZxHjW+bc/cvfwUxyKFKSUUwcxyRxQhLHRDZaBebG2JDpiIIEIASJrHyo1TqPekdVOcqqJMtLsmrG7HjG0596DcffuYDdKlBvGv19YcDKzS2j1z3D+Q/9kPFZT+y3g7omEXFUq64N918SsBWQ1AGBpBXz7Ii//C2h+qs3k+4IzrtWVmnZvard3QbqkYf3FtreJaC9Svzqe8bjFhGT2+bc+YvfJT6T4Rcj4jQiTiKSOCaO6syGqTlvguos7aWgtdoFY++co6wq8qyijKYcv1jy9O/cx+zHZ7CTMqQhm/2Jy7jUKG6eEJ055tR7HmP3DVdJ4hERYyIbGLhMUxlrawi07IdWsBWS5hw/kfLYf7qJ/Ec3E2+HJEVruHvj5MaSgLsLHRzAG2zwDR7dZRHJ6Yzbf+EHTF5zHc1GRDYmSgKwjmwU8ms1EbsEDF0Cnsp5qtJRuhIXT9n/Xsqz//leimvb2HG5VqMVcmnuOwhE1LqZaXTv82y/7ceM7zxiNLFENiWStGZigFFiFYk8qp7iWsr1L1/gxc/eguYJZlTnEpuzxjI8+7Fe0OGRh2sVpjv43PyySCuvJ0bxRQSi3PSepzj7zmeIJiBlipEIG9cEtKaOXKQx8V0bcRfSRT5aUMwrrnzuZl76izvBGSR14WF6qSldNRatDHsNMXwWg3XYi1dJ7n6e5OIB8emSaByyRngDiwnVS7tkT5xj9n/PUhyMiMYlWA1wpda49aM3umC7MyVSE/A3drNVH7xK50ur7Ri0poMEqfsDwS0ixpcOOfPOJ9m6/xrRlmIlwfgYI8H+yIqAIWenpsRTUs7h6Ht7XP3sJeZPniYaB4OunQKEdDrfu/PKywkeVYEyAmfwtoCkQOIySJ+zkKW4PA5JgNQFafQbRgSk0Q+om6fs5OGdxWp7ibaav2VDs1Env2cUX1jUCenFQ8b3XWZ09zXis3OiicfGoT9PAa2Eam4pro7JnjrD4rELLJ49BQbsqCt17aM0+xOHehdXdrLui1YNnQhar2oxEjJAq8yKDrX4voLB0pZSaLCBbYbrKyRgs/012CYtIrQUSCrMzhyznSGjHOIScRZdpLjjMf5ogpYxEimSlPXBTGfFzqbZWaXdT9sm4OBw8xJ2LD2pNMYaNjczD9OyNcrgaxyoWk8ZyMB0m3YspLRiUFlF8gJxiUkCMZhu4492Ud8wAxK6U03kkaTAe+py47rfRJszAb1uet2462Woq1vo7nLQRi+V8gqG6fuC2Bzx1daYA71+TN00m7ZpgqkemRIUtS5AhUZH6dKeqEogXDOFJu0NQd2eqGZrb5fh2tsNI4Njq3RSu900qSyv3R13036VdnnECFMXtAd2BLSnvGWw8XvpVFrJiFWurjuWL4MH18GxsC4z+xuSBqc8htRS2tWFobbd5dydDkwHbB5VUKJhjgzFxP0lAIMLIGSz3VC6TUy6YSy1O4WsJ4z6SMuh0J1vlLZl1a5Q6KZhLjnBqdbnluW4640HyDfPRQ88cEut9AYXPGH8WHvTbydNS60lvNvno7p5nYaePAbeGnQYuoDpskA2FCHlpMGhDTOyeoMH1d7Q18mM606wNM3KpkKmDsz19dp1VXuRWPezvU1duqzKbZAEHXyAzr4rGTbN0gPkw48lPdslDRAlbUL31qloh2zaGL2VG0r78OauG1Wy+5oR0XV8g8NWG9Yg+e7cXMPeyMkSNaSm2nBv2p0R2TR7K+0z6uBoqg6Oy64/YlrdaX3GL1Na/dGVqO2iZINv0xNgDCeuSHmlCEu7YwWDKzP7I7nrfYODI4s3GBRfel5ZrbASGQZq7ZzC+roG0eYCyFdgjfqOSYfGI3TzlXSwpW5gwkL6P3wl4FdekTs8aV64N480+OX1vs9239EGe9AxwtLePdBVgdY8/St4BGnO+skrk3DpbtcYFAJ9ZaTUEwZrhvYSyKoPv9excsLWmAEz3XgIHdhatHFkqmPO13Cqow7aiY11M8bVE9Sk7ZiGXU17X6vcgKg0m4uGNg5s5pZ2YtPmloyhx5JWUWb42NJY+iVdGjf3uXTa1LpeZqMX1qYG1aTqbAeR7ipAGVhD0DmrYSCs0l6RWHqbIJdbdtsD0dre3kEbmrSdqjYeVjsb1aQTQg5FOkK/VUA2rzWTAaDWWxTYhg6yabds44GMNpa8yBC4kHVQ00RazeOu7y2DQ3lD4aqeEOMM7vRTXbd6d5cEDaYQbxSxyEb02w/7NmPLqLuptB8HygkphmFcJ5ucx4B9FGkbZT3BbvdOozo0o7HRkaxS3c11yMogbFKGr9ucmg+FdWnn27rc6zf460Y4rENSLEP9h20Bkg3ISwcBt3bgTfcaMvgczW0k2qqByzp6ajaGSh94d7NOAkSitbQNrQJp5vH6MrYR6LQyxkN4sFGkUoXe8p+OQRlyPtp0TtLfYE5z/dMSJfQWrkqnpa+dn0QH0gza9tQtCex5YNVBGyE9x78+yHIwRgcJPiB2cmPIK63dqbQCt1Wiq2MzTSu7vSlIPQH+qKw8NardHHy98r72wqqvBMn3veoN13bKcLJqaLxWB42EnrC+rwFddDPCHFx61r1rZ4pAe4+wxg1NLdIw8t/dy9Je8eE3Rgja2pWl2s/D9SoWXb/UmrPtOpGhtJg2ALeuII52x0y1UctWhpaWdK7rQ7OmdDFjI8/U3IjSsBerDlWRNSA2TSS7KpyuDaw0HYZoP7+nAxhsmY6S0FkahnkavXeqrQEZaTJU28WtFVJQ7ZuWzr2bC8FloO6iqm0X0fwfHLoE025ZVfl/zDMiFUI2vGgAAAAASUVORK5CYII=", alt: "Omni Work", style: { width: "75%", height: "75%", objectFit: "contain" } })), /* @__PURE__ */ React.createElement("span", { className: "display text-lg font-semibold", style: { color: COLORS.ink } }, "Omni Work")), /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-1 rounded-full p-1", style: { background: COLORS.panelAlt } }, /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        onClick: () => setTab("browse"),
+        style: { background: tab === "browse" ? COLORS.panel : "transparent", color: COLORS.ink },
+        className: "px-4 py-1.5 rounded-full text-sm font-medium"
+      },
+      "Browse"
+    ), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        onClick: () => setTab("post"),
+        style: { background: tab === "post" ? COLORS.panel : "transparent", color: COLORS.ink },
+        className: "px-4 py-1.5 rounded-full text-sm font-medium"
+      },
+      "Post a task"
+    )), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        onClick: () => setSafetyOpen(true),
+        style: { borderColor: COLORS.danger, color: COLORS.danger },
+        className: "border rounded-full px-3 py-1.5 text-sm font-medium flex items-center gap-1.5"
+      },
+      /* @__PURE__ */ React.createElement(ShieldCheck, { size: 14 }),
+      " Safety"
+    ))), /* @__PURE__ */ React.createElement("main", { className: "max-w-5xl mx-auto px-4 md:px-6 py-8" }, tab === "browse" ? /* @__PURE__ */ React.createElement("div", { className: "flex flex-col md:flex-row gap-6" }, /* @__PURE__ */ React.createElement("aside", { className: "md:w-56 shrink-0 flex flex-col gap-6" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { style: { color: COLORS.ink }, className: "text-sm font-medium mb-2" }, "Job type"), /* @__PURE__ */ React.createElement("div", { className: "flex md:flex-col gap-2" }, [
+      { v: "all", label: "All tasks" },
+      { v: "unskilled", label: "General labor" },
+      { v: "skilled", label: "Skilled" }
+    ].map(({ v, label }) => /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        key: v,
+        onClick: () => setCategoryFilter(v),
+        style: {
+          color: categoryFilter === v ? COLORS.ink : COLORS.inkSoft,
+          fontWeight: categoryFilter === v ? 600 : 400
+        },
+        className: "text-left text-sm px-1 py-1"
+      },
+      label
+    )))), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { style: { color: COLORS.ink }, className: "text-sm font-medium mb-2" }, "Pay type"), /* @__PURE__ */ React.createElement("div", { className: "flex md:flex-col gap-2" }, [
+      { v: "all", label: "Any" },
+      { v: "fixed", label: "Flat rate" },
+      { v: "hourly", label: "Hourly" },
+      { v: "negotiable", label: "Negotiable" }
+    ].map(({ v, label }) => /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        key: v,
+        onClick: () => setPayFilter(v),
+        style: {
+          color: payFilter === v ? COLORS.ink : COLORS.inkSoft,
+          fontWeight: payFilter === v ? 600 : 400
+        },
+        className: "text-left text-sm px-1 py-1"
+      },
+      label
+    )))), /* @__PURE__ */ React.createElement("label", { className: "flex items-center gap-2 text-sm", style: { color: COLORS.inkSoft } }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: verifiedOnly, onChange: (e) => setVerifiedOnly(e.target.checked) }), "Verified posters & businesses only")), /* @__PURE__ */ React.createElement("section", { className: "flex-1" }, /* @__PURE__ */ React.createElement("p", { style: { color: COLORS.inkSoft }, className: "text-sm mb-4" }, filtered.length, " task", filtered.length !== 1 ? "s" : "", " available"), /* @__PURE__ */ React.createElement("div", { className: "grid sm:grid-cols-2 gap-4" }, filtered.map((t) => /* @__PURE__ */ React.createElement(TaskCard, { key: t.id, task: t, onOpen: setOpenTask }))), filtered.length === 0 && /* @__PURE__ */ React.createElement("div", { style: { color: COLORS.inkSoft }, className: "text-center py-16 text-sm" }, "No tasks match those filters yet."))) : /* @__PURE__ */ React.createElement(PostTaskForm, { onCreate: (newTasks) => {
+      setTasks((ts) => [...newTasks, ...ts]);
+      setTab("browse");
+    } })), openTask && /* @__PURE__ */ React.createElement(TaskDetail, { task: openTask, onClose: () => setOpenTask(null) }), /* @__PURE__ */ React.createElement(SafetyCenter, { open: safetyOpen, onClose: () => setSafetyOpen(false) }));
+  }
+  ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
+})();
+
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    });
+  }
+</script>
+</body>
+</html>
